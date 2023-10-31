@@ -31,7 +31,7 @@ Execute o Aplicativo
 ## Autores
 
 - [@Gabriel Moreira](https://www.github.com/)
-- [@José Fernando](https://www.github.com/)
+- [@José Fernando](https://github.com/fernandooliveira7)
 - [@José Medeiros](https://www.github.com/)
 - [@Marcos Oliveira](https://github.com/Markie98)
 - [@Mateus Marinho](https://www.github.com/notmarinho)
