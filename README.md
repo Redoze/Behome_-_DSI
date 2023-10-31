@@ -30,10 +30,10 @@ Execute o Aplicativo
 
 ## Autores
 
-- [@Marcos Oliveira](https://www.github.com/)
-- [@Jose Fernando](https://www.github.com/)
 - [@Gabriel Moreira](https://www.github.com/)
-- [@José ](https://www.github.com/)
+- [@José Fernando](https://www.github.com/)
+- [@José Medeiros](https://www.github.com/)
+- [@Marcos Oliveira](https://github.com/Markie98)
 - [@Mateus Marinho](https://www.github.com/notmarinho)
 
 
