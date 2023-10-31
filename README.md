@@ -9,7 +9,7 @@ Este projeto foi desenvolvido como parte da matéria de Desenvolvimento de Siste
 
 ## Rodando localmente
 
-Clone o projeto
+Clone o Projeto
 
 ```bash
   git clone https://github.com/Redoze/DSI-Behome.git
