@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "121518667132",
+    "project_id": "behome-b37b4",
+    "storage_bucket": "behome-b37b4.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:121518667132:android:5bc68a38504e6c80ab60f9",
+        "android_client_info": {
+          "package_name": "com.example.behome"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB_H-wxeT9TmK32JinHtdwXLUYEhT9-W74"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
