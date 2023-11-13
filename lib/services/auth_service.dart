@@ -1,6 +1,11 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
+class AuthException implements Exception {
+  String message;
+  AuthException(this.message);
+}
+
 class AuthService extends ChangeNotifier {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   User? user;
@@ -30,9 +35,9 @@ class AuthService extends ChangeNotifier {
       _getUser();
     } on FirebaseAuthException catch (e) {
       if (e.code == 'weak-password') {
-        throw 'A senha fornecida é muito fraca.';
+        throw AuthException('A senha fornecida é muito fraca.');
       } else if (e.code == 'email-already-in-use') {
-        throw 'A conta já existe para este e-mail.';
+        throw AuthException('A conta já existe para este e-mail.');
       }
     }
   }
@@ -43,10 +48,14 @@ class AuthService extends ChangeNotifier {
       _getUser();
     } on FirebaseAuthException catch (e) {
       if (e.code == 'user-not-found') {
-        throw 'Nenhum usuário encontrado para este e-mail.';
+        throw AuthException('Usuário ou senha inválidos.');
       } else if (e.code == 'wrong-password') {
-        throw 'Usuário ou senha inválidos.';
+        throw AuthException('Usuário ou senha inválidos.');
+      } else if (e.code == "INVALID_LOGIN_CREDENTIALS") {
+        throw AuthException("Usuário ou senha inválidos.");
       }
+
+      throw AuthException("Error Desconhecido");
     }
   }
 

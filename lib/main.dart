@@ -30,7 +30,8 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Be Home',
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+        colorScheme:
+            ColorScheme.fromSeed(seedColor: Color.fromARGB(255, 39, 24, 255)),
         useMaterial3: true,
       ),
       home: const AuthCheck(),
