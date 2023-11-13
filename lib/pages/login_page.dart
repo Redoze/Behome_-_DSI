@@ -1,5 +1,6 @@
 import 'package:behome/pages/register_page.dart';
 import 'package:behome/services/auth_service.dart';
+import 'package:behome/widgets/form_validators.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -15,13 +16,18 @@ class _LoginPageState extends State<LoginPage> {
   final email = TextEditingController();
   final password = TextEditingController();
 
+  bool isLoading = false;
+
   login() async {
     try {
+      setState(() => isLoading = true);
       await context.read<AuthService>().login(email.text, password.text);
     } on AuthException catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
         content: Text(e.message),
       ));
+    } finally {
+      setState(() => isLoading = false);
     }
   }
 
@@ -61,25 +67,17 @@ class _LoginPageState extends State<LoginPage> {
                             label: Text('Email'),
                           ),
                           keyboardType: TextInputType.emailAddress,
-                          validator: (value) => value!.isEmpty
-                              ? 'Por favor, insira um email válido'
-                              : null,
+                          validator: FormValidators.email,
                         ),
                         TextFormField(
-                            controller: password,
-                            decoration: const InputDecoration(
-                              border: UnderlineInputBorder(),
-                              label: Text('Senha'),
-                            ),
-                            obscureText: true,
-                            validator: (value) {
-                              if (value!.isEmpty) {
-                                return 'Por favor, insira uma senha válida';
-                              } else if (value.length < 6) {
-                                return 'A senha deve ter pelo menos 6 caracteres';
-                              }
-                              return null;
-                            }),
+                          controller: password,
+                          decoration: const InputDecoration(
+                            border: UnderlineInputBorder(),
+                            label: Text('Senha'),
+                          ),
+                          obscureText: true,
+                          validator: FormValidators.password,
+                        ),
                       ],
                     ),
                   ),
@@ -94,7 +92,13 @@ class _LoginPageState extends State<LoginPage> {
                           login();
                         }
                       },
-                      child: const Text('Entrar'),
+                      child: isLoading
+                          ? const SizedBox(
+                              height: 20,
+                              width: 20,
+                              child: CircularProgressIndicator(),
+                            )
+                          : const Text('Entrar'),
                     ),
                   ),
                 ),
@@ -103,14 +107,13 @@ class _LoginPageState extends State<LoginPage> {
                   child: SizedBox(
                     width: double.infinity,
                     child: TextButton(
-                      onPressed: () {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (builder) => const RegisterPage()));
-                      },
-                      child: const Text('Criar conta'),
-                    ),
+                        onPressed: () {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (builder) => const RegisterPage()));
+                        },
+                        child: const Text('Criar conta')),
                   ),
                 ),
               ],
