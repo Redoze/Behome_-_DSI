@@ -32,19 +32,27 @@ class AuthService extends ChangeNotifier {
     try {
       await _auth.createUserWithEmailAndPassword(
           email: email, password: password);
-      _getUser();
+
+        
+          
     } on FirebaseAuthException catch (e) {
       if (e.code == 'weak-password') {
         throw AuthException('A senha fornecida é muito fraca.');
       } else if (e.code == 'email-already-in-use') {
         throw AuthException('A conta já existe para este e-mail.');
       }
+
+      throw AuthException("Error Desconhecido");
     }
   }
 
   login(String email, String password) async {
     try {
       await _auth.signInWithEmailAndPassword(email: email, password: password);
+
+  // Clear Navigation History
+  
+
       _getUser();
     } on FirebaseAuthException catch (e) {
       if (e.code == 'user-not-found') {
