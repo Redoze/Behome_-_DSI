@@ -27,6 +27,11 @@ Execute o Aplicativo
   flutter run
 ```
 
+## Links Do Projeto
+
+- [Trello](https://trello.com/b/hIaFQJsC/desenvolvimento-do-app-behome)
+- [Figma](https://www.figma.com/file/ZJyTx40DomqDjkBkecbgbH/BEHOME?type=design&node-id=0%3A1&mode=design&t=Ti0vtXlrKrHD1q8J-1)
+- [Documentação](https://docs.google.com/document/d/1cYIUR5qAKPz7FItS1zC-k0Q-Imp2revxFON3HV3lwwo/edit)
 
 ## Autores
 
