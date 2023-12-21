@@ -1,4 +1,5 @@
 import 'package:behome/services/auth_service.dart';
+import 'package:behome/widgets/expenses_list.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -61,7 +62,7 @@ class _HomePageState extends State<HomePage> {
                           ),
                         ),
                         Text(
-                          'Crie seu BeHome',
+                          'Seu BeHome',
                           style: TextStyle(
                             fontSize: 32,
                             fontWeight: FontWeight.bold,
@@ -71,6 +72,7 @@ class _HomePageState extends State<HomePage> {
                       ],
                     ),
                   ),
+                  const ExpensesList()
                 ],
               )),
         ),
