@@ -52,7 +52,7 @@ class _RegisterPageState extends State<RegisterPage> {
       body: Padding(
         padding: const EdgeInsets.all(20),
         child: Column(
-          children: [
+          children: [   
             const Row(
               crossAxisAlignment:
                   CrossAxisAlignment.center, // Centraliza verticalmente
