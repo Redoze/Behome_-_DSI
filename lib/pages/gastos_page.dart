@@ -1,5 +1,11 @@
+import 'package:behome/models/expense_model.dart';
+import 'package:behome/services/auth_service.dart';
+import 'package:behome/services/expense_service.dart';
+import 'package:behome/widgets/form_validators.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:provider/provider.dart';
 
 class GastosPage extends StatefulWidget {
   const GastosPage({super.key});
@@ -9,21 +15,65 @@ class GastosPage extends StatefulWidget {
 }
 
 class _GastosPageState extends State<GastosPage> {
+  final formKey = GlobalKey<FormState>();
+  final amount = TextEditingController();
+
   String titulo = '';
   String residente = '';
   String categoria = '';
   bool isRecorrente = false;
 
-  adicionarGasto() {
-    // .
-    // .
-    // .
-    // Lógica; print para testes.
-    print('Titulo: $titulo, Residente: $residente, Categoria: $categoria, Recorrente: $isRecorrente');
+  FirestoreService firestoreService = FirestoreService();
+
+  void _submitExpense(String homeId) async {
+    try {
+      double doubleAmount = double.parse(amount.text);
+
+      ExpenseModel newExpense = ExpenseModel(
+        amount: doubleAmount,
+        category: categoria,
+        date: DateTime.now(),
+        personId: "RandomId",
+        personName: residente,
+        title: titulo,
+        homeId: homeId,
+      );
+
+      await firestoreService.createExpense(newExpense);
+
+      Fluttertoast.showToast(
+          msg: "Gasto adicionado com sucesso!",
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.BOTTOM,
+          timeInSecForIosWeb: 1,
+          backgroundColor: Colors.green,
+          textColor: Colors.white,
+          fontSize: 16.0);
+
+      Navigator.pop(context); // Navigate back
+    } catch (e) {
+      Fluttertoast.showToast(
+          msg: "Erro ao adicionar gasto: ${e.toString()}",
+          toastLength: Toast.LENGTH_LONG,
+          gravity: ToastGravity.BOTTOM,
+          timeInSecForIosWeb: 1,
+          backgroundColor: Colors.red,
+          textColor: Colors.white,
+          fontSize: 16.0);
+    }
   }
 
   @override
   Widget build(BuildContext context) {
+    AuthService authService = Provider.of<AuthService>(context);
+
+    // Check if the user is not null
+    if (authService.user == null) {
+      return const Center(child: CircularProgressIndicator());
+    }
+
+    String userId = authService.user!.uid;
+
     return Scaffold(
       body: Center(
         child: Container(
@@ -44,71 +94,78 @@ class _GastosPageState extends State<GastosPage> {
                         fontWeight: FontWeight.bold,
                       ),
                     ),
-                    const SizedBox(height: 10),
+                    SizedBox(height: 10),
                     // Adicionando o texto "Valor" na cor cinza
-                    Text(
-                      'Valor',
-                      style: TextStyle(
-                        fontSize: 24,
-                        color: Color.fromARGB(255, 145, 145, 145),
-                      ),
-                    ),
                   ],
                 ),
               ),
               // Campos de texto
-              Padding(
-                padding: const EdgeInsets.all(20),
-                child: Column(
-                  children: [
-                    TextFormField(
-                      onChanged: (value) => titulo = value,
-                      decoration: const InputDecoration(
-                        border: OutlineInputBorder(),
-                        labelText: 'Titulo',
-                      ),
-                    ),
-                    const SizedBox(height: 10),
-                    TextFormField(
-                      onChanged: (value) => residente = value,
-                      decoration: const InputDecoration(
-                        border: OutlineInputBorder(),
-                        labelText: 'Residente',
-                      ),
-                    ),
-                    const SizedBox(height: 10),
-                    TextFormField(
-                      onChanged: (value) => categoria = value,
-                      decoration: const InputDecoration(
-                        border: OutlineInputBorder(),
-                        labelText: 'Categoria',
-                      ),
-                    ),
-                    const SizedBox(height: 10),
-                    // CupertinoSwitch
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        const Text(
-                          'Recorrente',
-                          style: TextStyle(color: Colors.black),
+              Form(
+                key: formKey,
+                child: Padding(
+                  padding: const EdgeInsets.all(20),
+                  child: Column(
+                    children: [
+                      TextFormField(
+                        controller: amount,
+                        keyboardType: TextInputType.number,
+                        validator: FormValidators.amount,
+                        decoration: const InputDecoration(
+                          border: OutlineInputBorder(),
+                          labelText: 'Valor',
                         ),
-                        CupertinoSwitch(
-                          value: isRecorrente,
-                          onChanged: (value) {
-                            setState(() {
-                              isRecorrente = value;
-                            });
-                          },
+                      ),
+                      const SizedBox(height: 10),
+                      TextFormField(
+                        onChanged: (value) => titulo = value,
+                        decoration: const InputDecoration(
+                          border: OutlineInputBorder(),
+                          labelText: 'Titulo',
                         ),
-                      ],
-                    ),
-                    const SizedBox(height: 10),
-                    const Text(
-                      'Ative esta opção caso o gasto seja fixo todos os meses.',
-                      style: TextStyle(color: Color.fromARGB(255, 145, 145, 145)),
-                    ),
-                  ],
+                      ),
+                      const SizedBox(height: 10),
+                      TextFormField(
+                        onChanged: (value) => residente = value,
+                        decoration: const InputDecoration(
+                          border: OutlineInputBorder(),
+                          labelText: 'Residente',
+                        ),
+                      ),
+                      const SizedBox(height: 10),
+                      TextFormField(
+                        onChanged: (value) => categoria = value,
+                        decoration: const InputDecoration(
+                          border: OutlineInputBorder(),
+                          labelText: 'Categoria',
+                        ),
+                      ),
+                      const SizedBox(height: 10),
+                      // CupertinoSwitch
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          const Text(
+                            'Recorrente',
+                            style: TextStyle(color: Colors.black),
+                          ),
+                          CupertinoSwitch(
+                            value: isRecorrente,
+                            onChanged: (value) {
+                              setState(() {
+                                isRecorrente = value;
+                              });
+                            },
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 10),
+                      const Text(
+                        'Ative esta opção caso o gasto seja fixo todos os meses.',
+                        style: TextStyle(
+                            color: Color.fromARGB(255, 145, 145, 145)),
+                      ),
+                    ],
+                  ),
                 ),
               ),
               Padding(
@@ -116,7 +173,11 @@ class _GastosPageState extends State<GastosPage> {
                 child: SizedBox(
                   width: double.infinity,
                   child: ElevatedButton(
-                    onPressed: adicionarGasto,
+                    onPressed: () {
+                      if (formKey.currentState!.validate()) {
+                        _submitExpense(userId);
+                      }
+                    },
                     style: ElevatedButton.styleFrom(
                       padding: const EdgeInsets.symmetric(vertical: 15),
                     ),

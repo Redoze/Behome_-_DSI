@@ -11,6 +11,12 @@ class FirestoreService {
     await docRef.set(expense.toJson());
   }
 
+  Stream<double> calculateTotalExpenses(String homeId) {
+    return readExpenses(homeId).map((expenses) {
+      return expenses.fold(0, (sum, expense) => sum + expense.amount);
+    });
+  }
+
   Stream<List<ExpenseModel>> readExpenses(String homeId) {
     return _expensesCollection
         .where('homeId', isEqualTo: homeId)

@@ -69,7 +69,7 @@ class ExpensesList extends StatelessWidget {
                             symbol: 'R\$',
                           ).format(expense.amount),
                           style: const TextStyle(
-                            color: Color.fromRGBO(8, 85, 255, 1),
+                            color: Colors.blue,
                             fontSize: 16,
                             fontWeight: FontWeight.bold,
                           )),
