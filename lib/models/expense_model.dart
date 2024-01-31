@@ -1,5 +1,7 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 class ExpenseModel {
-  late final String? id;
+  String? id;
   final String title;
   final String category;
   final String personName;
@@ -23,10 +25,10 @@ class ExpenseModel {
     return {
       "title": title,
       "amount": amount,
-      "date": date.toIso8601String(),
+      "date": FieldValue.serverTimestamp(),
       "category": category,
-      "debtor": personName,
-      "debtorId": personId,
+      "personName": personName,
+      "personId": personId,
       "homeId": homeId,
     };
   }
@@ -37,7 +39,7 @@ class ExpenseModel {
       id: id,
       title: firestore['title'],
       amount: firestore['amount'],
-      date: firestore['date'].toDate(),
+      date: DateTime.now(),
       category: firestore['category'],
       personName: firestore['personName'],
       personId: firestore['personId'],

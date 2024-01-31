@@ -1,6 +1,15 @@
 // Arquivo: form_validators.dart
 
 class FormValidators {
+  static String? amount(String? value) {
+    if (value == null || value.isEmpty) {
+      return 'Por favor, insira um valor válido';
+    } else if (double.tryParse(value) == null) {
+      return 'Por favor, insira um valor válido';
+    }
+    return null;
+  }
+
   static String? password(String? value) {
     if (value == null || value.isEmpty) {
       return 'Por favor, insira uma senha válida';

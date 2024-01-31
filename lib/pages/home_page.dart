@@ -1,6 +1,10 @@
+import 'package:behome/pages/gastos_page.dart';
 import 'package:behome/services/auth_service.dart';
+import 'package:behome/services/expense_service.dart';
+import 'package:behome/styles/text_styles.dart';
 import 'package:behome/widgets/expenses_list.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
 class HomePage extends StatefulWidget {
@@ -21,195 +25,200 @@ class _HomePageState extends State<HomePage> {
     }
   }
 
-  final totalAmountController = TextEditingController(text: 'R\$0.00');
-  final fixedExpensesController = TextEditingController(text: 'R\$0.00');
-
-  String totalAmount = 'R\$0,00';
-  String fixedExpenses = 'R\$0,00';
-  double initialY = -1;
-  double currentY = -1;
-
-  void_onVerticalDragUpdate(DragUpdateDetails details) {
-    setState(() {
-      currentY = details.localPosition.dy;
-    });
-  }
-
-  void _onVerticalDragEnd(_) {
-    setState(() {
-      initialY = currentY;
-    });
-  }
-
-  void incrementTotalAmount(String value) {
-    setState(() {
-      totalAmount = value;
-    });
-  }
-
-  void incrementFixedExpenses(String value) {
-    setState(() {
-      fixedExpenses = value;
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        body: Center(
-      child: Container(
-          decoration: const BoxDecoration(
-              gradient: LinearGradient(
+      body: Container(
+        decoration: const BoxDecoration(
+          gradient: LinearGradient(
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
             colors: [
-              Color.fromRGBO(8, 85, 255, 1),
-              Color.fromRGBO(5, 39, 114, 1),
+              Color.fromRGBO(8, 85, 255, 1), // End color
+              Color.fromRGBO(8, 85, 255, 1), // Start color
             ],
-          )),
-          child: Container(
-              alignment: Alignment.topLeft,
-              child:
-                  Column(crossAxisAlignment: CrossAxisAlignment.end, children: [
-                const SizedBox(height: 40),
-                IconButton(
-                  onPressed: logout,
-                  icon: const Icon(Icons.logout, color: Colors.white, size: 40),
-                ),
-                const Padding(
-                  padding: EdgeInsets.all(20),
-                  child: Row(
-                    crossAxisAlignment:
-                        CrossAxisAlignment.center, // Centraliza verticalmente
-                    children: [
-                      Padding(
-                        padding: EdgeInsets.only(
-                            right: 16), // Ajuste conforme necessário
-                        child: Image(
-                          image:
-                              AssetImage('assets/images/logo_behome_white.png'),
-                          width: 40,
+          ),
+        ),
+        child: SafeArea(
+          bottom: false,
+          child: Column(
+            children: [
+              HomeHeader(
+                onSettingsPressed: logout,
+              ),
+              const HouseInfo(),
+              const SizedBox(height: 40),
+              Expanded(
+                child: Container(
+                  decoration: const BoxDecoration(
+                    color: Colors.white, // Set the background color to white
+                    borderRadius: BorderRadius.only(
+                      topLeft: Radius.circular(24.0), // Top left corner radius
+                      topRight:
+                          Radius.circular(24.0), // Top right corner radius
+                    ),
+                  ),
+                  // You can add padding, margin, etc., as needed.
+                  // Add your content or other widgets inside the Container.
+                  child: Padding(
+                    padding: const EdgeInsets.all(16),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          "Gastos Recentes",
+                          style: AppTextStyles.title
+                              .copyWith(color: Colors.black54),
                         ),
-                      ),
-                      Text(
-                        'Crie seu BeHome',
-                        style: TextStyle(
-                          fontSize: 32,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.white,
-                        ),
-                      ),
-                    ],
+                        ElevatedButton(
+                            onPressed: () {
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (builder) =>
+                                          const GastosPage()));
+                            },
+                            child: const Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Text("Adicionar Gasto"),
+                                Icon(Icons.add),
+                              ],
+                            )),
+                        const ExpensesList(),
+                      ],
+                    ),
                   ),
                 ),
-                Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Padding(
-                      //Total amount
-                      padding: EdgeInsets.only(top: 20),
-                      child: Text(
-                        "Gastos Totais",
-                        style: TextStyle(
-                          fontSize: 26,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.white,
-                        ),
-                        textAlign: TextAlign.center,
-                      ),
-                    ),
-                    Text(
-                      totalAmount,
-                      style: TextStyle(
-                          fontSize: 26,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.white),
-                      textAlign: TextAlign.center,
-                    ),
-                  ],
-                ),
-                Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Padding(
-                      // Fixed expenses
-                      padding: EdgeInsets.only(top: 20),
-                      child: Text(
-                        "Gastos Fixos",
-                        style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.normal,
-                          color: Colors.white,
-                        ),
-                        textAlign: TextAlign.center,
-                      ),
-                    ),
-                    Text(
-                      totalAmount,
-                      style: TextStyle(
-                          fontSize: 26,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.white),
-                      textAlign: TextAlign.center,
-                    ),
-                  ],
-                ),
-                Expanded(
-                    child: DraggableScrollableSheet(
-                  maxChildSize: 1.0,
-                  minChildSize: 0.9,
-                  initialChildSize: 0.9,
-                  builder: (BuildContext context,
-                      ScrollController scrollController) {
-                    return Container(
-                        decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.vertical(
-                                top: Radius.circular(30))),
-                        child: ListView(
-                          controller: scrollController,
-                          padding: EdgeInsets.only(top: 15),
-                          children: [
-                            Padding(
-                              // Residents
-                              padding: EdgeInsets.all(20),
-                              child: Container(
-                                height: MediaQuery.of(context).size.height * .1,
-                                child: ListView.builder(
-                                  scrollDirection: Axis.horizontal,
-                                  itemCount: 1,
-                                  itemBuilder:
-                                      (BuildContext context, int index) {
-                                    return Padding(
-                                        padding: EdgeInsets.all(8),
-                                        child: Column(
-                                          children: [
-                                            // Container for residents
-                                          ],
-                                        ));
-                                  },
-                                ),
-                              ),
-                            ),
-                            Padding(
-                              // Expenses
-                              padding: EdgeInsets.all(20),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text("Despesas Recente",
-                                      style: TextStyle(
-                                          fontSize: 18,
-                                          fontWeight: FontWeight.bold,
-                                          color: Colors.black)),
-                                ],
-                              ),
-                            ),
-                          ],
-                        ));
-                  },
-                ))
-              ]))),
-    ));
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class HomeHeader extends StatelessWidget {
+  final VoidCallback
+      onSettingsPressed; // Step 1: Define a variable for the function
+
+  const HomeHeader({
+    super.key,
+    required this.onSettingsPressed, // Require the function to be passed as a parameter
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.all(20),
+      child: Row(
+        children: [
+          const Image(
+            image: AssetImage('assets/images/logo_behome_white.png'),
+            width: 40,
+          ),
+          const SizedBox(width: 20),
+          const Text(
+            "Seu BeHome",
+            style: TextStyle(
+              fontSize: 28,
+              fontWeight: FontWeight.bold,
+              color: Colors.white,
+            ),
+          ),
+          const Spacer(),
+          IconButton(
+            onPressed: onSettingsPressed,
+            icon: const Icon(
+              Icons.settings,
+              size: 28,
+              color: Colors.white,
+            ),
+          )
+        ],
+      ),
+    );
+  }
+}
+
+class HouseInfo extends StatelessWidget {
+  const HouseInfo({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            IconButton(
+              onPressed: () {},
+              color: Colors.white,
+              icon: const Icon(Icons.keyboard_arrow_left),
+            ),
+            const SizedBox(width: 20),
+            const Text("Dezembro", style: AppTextStyles.label),
+            const SizedBox(width: 20),
+            IconButton(
+              onPressed: () {},
+              color: Colors.white,
+              icon: const Icon(Icons.keyboard_arrow_right),
+            ),
+          ],
+        ),
+        const SizedBox(height: 10),
+        const Text("Gastos Totais", style: AppTextStyles.title),
+        // const Text("RS 3.530,40", style: AppTextStyles.largeTitle),
+        const ExpenseTotalValue(),
+        const Text("Gastos Fixos", style: AppTextStyles.description),
+        const Text("RS 1200,0", style: AppTextStyles.description)
+      ],
+    );
+  }
+}
+
+class ExpenseTotalValue extends StatelessWidget {
+  const ExpenseTotalValue({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    AuthService authService = Provider.of<AuthService>(context);
+    FirestoreService firestoreService = FirestoreService();
+
+    // Check if the user is not null
+    if (authService.user == null) {
+      return const Center(child: CircularProgressIndicator());
+    }
+
+    String homeId = authService.user!.uid;
+
+    return StreamBuilder<double>(
+      stream: firestoreService.calculateTotalExpenses(homeId),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return CircularProgressIndicator(); // Show loading indicator while waiting for data
+        }
+
+        if (snapshot.hasError) {
+          return Text(
+              'Error: ${snapshot.error}'); // Show error message if any error occurs
+        }
+
+        if (!snapshot.hasData) {
+          return const Text(
+              'No data available'); // Handle the case when there's no data
+        }
+
+        double totalExpenses = snapshot.data ?? 0;
+
+        return Text(
+            NumberFormat.currency(
+              locale: 'pt_BR',
+              symbol: 'R\$',
+            ).format(totalExpenses),
+            style: AppTextStyles.largeTitle); // Display the total expenses
+      },
+    );
   }
 }
