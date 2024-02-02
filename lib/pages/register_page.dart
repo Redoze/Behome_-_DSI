@@ -52,12 +52,12 @@ class _RegisterPageState extends State<RegisterPage> {
       body: Padding(
         padding: const EdgeInsets.all(20),
         child: Column(
-          children: [   
-            const Row(
+          children: [
+            Row(
               crossAxisAlignment:
                   CrossAxisAlignment.center, // Centraliza verticalmente
               children: [
-                Padding(
+                const Padding(
                   padding:
                       EdgeInsets.only(right: 16), // Ajuste conforme necessário
                   child: Image(
@@ -65,11 +65,17 @@ class _RegisterPageState extends State<RegisterPage> {
                     width: 40,
                   ),
                 ),
-                Text(
-                  'Crie seu BeHome',
-                  style: TextStyle(
-                    fontSize: 36,
-                    fontWeight: FontWeight.bold,
+                SizedBox(
+                  width: MediaQuery.of(context).size.width * 0.7,
+                  child: const Flexible(
+                    fit: FlexFit.tight,
+                    child: Text(
+                      'Crie seu BeHome',
+                      style: TextStyle(
+                        fontSize: 30,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
                   ),
                 ),
               ],
