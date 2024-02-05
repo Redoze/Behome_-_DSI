@@ -1,19 +1,21 @@
+import 'package:flutter/material.dart';
+
 class CategoryModel {
   String? id;
-  String? name;
-  String? icon;
+  final String title;
+  final IconData icon;
   bool? isActive;
 
   CategoryModel({
     this.id,
-    required this.name,
+    required this.title,
     required this.icon,
     this.isActive = true,
   });
 
   toJson() {
     return {
-      "name": name,
+      "name": title,
       "icon": icon,
       "isActive": isActive,
     };
@@ -23,7 +25,7 @@ class CategoryModel {
       Map<String, dynamic> firestore, String id) {
     return CategoryModel(
       id: id,
-      name: firestore['name'],
+      title: firestore['name'],
       icon: firestore['icon'],
       isActive: firestore['isActive'],
     );

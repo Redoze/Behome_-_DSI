@@ -1,5 +1,5 @@
+import 'package:behome/models/category_model.dart';
 import 'package:flutter/material.dart';
-import '../models/categories_model.dart';
 import '../models/icons_list_model.dart';
 
 class CategoryRegisterPage extends StatefulWidget {
@@ -15,7 +15,7 @@ class _CategoryRegisterPageState extends State<CategoryRegisterPage> {
   final _titleController = TextEditingController();
 
   void _submitCategory() {
-    var _category = CategoriesModel(
+    var _category = CategoryModel(
         id: _categoryId.toString(),
         title: _titleController.text,
         icon: _iconController);

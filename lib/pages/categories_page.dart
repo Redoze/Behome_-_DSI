@@ -1,6 +1,6 @@
+import 'package:behome/models/category_model.dart';
 import 'package:flutter/material.dart';
 import './category_register_page.dart';
-import '../models/categories_model.dart';
 
 class CategoryPage extends StatefulWidget {
   const CategoryPage({super.key});
@@ -10,14 +10,14 @@ class CategoryPage extends StatefulWidget {
 }
 
 class _CategoryPageState extends State<CategoryPage> {
-  final List<CategoriesModel> categoriesList = [
-    CategoriesModel(
+  final List<CategoryModel> categoriesList = [
+    CategoryModel(
         //Trocar essa lista fixa por uma com os fetches do firebase
         id: "0",
         title: "Fast Food",
         icon: Icons.brunch_dining_outlined),
-    CategoriesModel(id: "1", title: "Cinema", icon: Icons.music_note_outlined),
-    CategoriesModel(id: "2", title: "Reforma", icon: Icons.build),
+    CategoryModel(id: "1", title: "Cinema", icon: Icons.music_note_outlined),
+    CategoryModel(id: "2", title: "Reforma", icon: Icons.build),
   ];
 
   @override
