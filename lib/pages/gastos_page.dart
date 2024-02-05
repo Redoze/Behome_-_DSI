@@ -23,7 +23,7 @@ class _GastosPageState extends State<GastosPage> {
   String categoria = '';
   bool isRecorrente = false;
 
-  FirestoreService firestoreService = FirestoreService();
+  ExpenseService firestoreService = ExpenseService();
 
   void _submitExpense(String homeId) async {
     try {
@@ -31,9 +31,9 @@ class _GastosPageState extends State<GastosPage> {
 
       ExpenseModel newExpense = ExpenseModel(
         amount: doubleAmount,
-        category: categoria,
+        category: categoria, // @TODO: Put the selected categoryId here
         date: DateTime.now(),
-        personId: "RandomId",
+        personId: "RandomId", // @TODO: Put the selected personId here
         personName: residente,
         title: titulo,
         homeId: homeId,

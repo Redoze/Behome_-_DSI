@@ -1,7 +1,7 @@
 import 'package:behome/models/expense_model.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-class FirestoreService {
+class ExpenseService {
   final CollectionReference _expensesCollection =
       FirebaseFirestore.instance.collection('expenses');
 
@@ -26,7 +26,6 @@ class FirestoreService {
                 doc.data() as Map<String, dynamic>, doc.id))
             .toList())
         .handleError((error) {
-      print(error);
       return <ExpenseModel>[];
     });
   }
