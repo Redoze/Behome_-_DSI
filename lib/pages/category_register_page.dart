@@ -1,6 +1,9 @@
+import 'package:behome/services/auth_service.dart';
 import 'package:flutter/material.dart';
-import '../models/categories_model.dart';
+import '../models/category_model.dart';
 import '../models/icons_list_model.dart';
+import '../services/category_service.dart';
+import 'package:provider/provider.dart';
 
 class CategoryRegisterPage extends StatefulWidget {
   const CategoryRegisterPage({super.key});
@@ -10,23 +13,41 @@ class CategoryRegisterPage extends StatefulWidget {
 }
 
 class _CategoryRegisterPageState extends State<CategoryRegisterPage> {
-  final _categoryId = 0;
   var _iconController = null;
   final _titleController = TextEditingController();
 
-  void _submitCategory() {
-    var _category = CategoriesModel(
-        id: _categoryId.toString(),
-        title: _titleController.text,
-        icon: _iconController);
+  void _submitCategory(String homeId) {
+    final String iconName = IconsListModel()
+        .getList
+        .entries
+        .where((entry) => entry.value == _iconController)
+        .map((entry) => entry.key)
+        .toString();
+    // No ID passed at creation time here
+    var category = CategoryModel(
+        title: _titleController.text.toString(),
+        icon: iconName.toString(),
+        homeId: homeId);
 
-    //Implementar o submit pro firebase aqui
+    var categoryService = CategoryService();
+    // If categoryId is null, it's a new category, call 'createCategory'.
+
+    categoryService.createCategory(category);
 
     Navigator.pop(context);
   }
 
   @override
   Widget build(BuildContext context) {
+    AuthService authService = Provider.of<AuthService>(context);
+
+    // Check if the user is not null
+    if (authService.user == null) {
+      return const Center(child: CircularProgressIndicator());
+    }
+
+    String userId = authService.user!.uid;
+
     return Scaffold(
       appBar: AppBar(),
       body: Center(
@@ -102,7 +123,7 @@ class _CategoryRegisterPageState extends State<CategoryRegisterPage> {
                             height: 55,
                             width: 300,
                             child: ElevatedButton(
-                              onPressed: () => _submitCategory(),
+                              onPressed: () => _submitCategory(userId),
                               style: ElevatedButton.styleFrom(
                                 padding:
                                     const EdgeInsets.symmetric(vertical: 15),
