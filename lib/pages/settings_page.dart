@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:behome/pages/categories_page.dart';
 
 class SettingsPage extends StatefulWidget {
   const SettingsPage({super.key});
@@ -37,19 +38,16 @@ class _SettingsPageState extends State<SettingsPage> {
               ),
             ),
             SizedBox(height: MediaQuery.of(context).size.height * 0.1),
-            const Padding(
+            Padding(
               padding: EdgeInsets.all(20),
               child: Column(
                 children: [
-                  Row(
+                  const Row(
                     children: [
-                      CircleAvatar(
-                        radius: 30,
-                        child: IconButton(
-                          icon: Icon(Icons.person_add),
-                          color: Color.fromRGBO(8, 85, 255, 1),
-                          onPressed: null,
-                        ),
+                      IconButton(
+                        icon: Icon(Icons.person_add),
+                        color: Color.fromRGBO(8, 85, 255, 1),
+                        onPressed: null,
                       ),
                       Flexible(
                         fit: FlexFit.tight,
@@ -86,18 +84,20 @@ class _SettingsPageState extends State<SettingsPage> {
                       ),
                     ],
                   ),
-                  SizedBox(height: 20),
+                  const SizedBox(height: 20),
                   Row(
                     children: [
-                      CircleAvatar(
-                        radius: 30,
-                        child: IconButton(
-                          icon: Icon(Icons.add_home_work_rounded),
-                          color: Color.fromRGBO(255, 127, 8, 1),
-                          onPressed: null,
-                        ),
+                      IconButton(
+                        icon: const Icon(Icons.add_home_work_rounded),
+                        color: const Color.fromRGBO(255, 127, 8, 1),
+                        onPressed: () {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (builder) => const CategoryPage()));
+                        },
                       ),
-                      Flexible(
+                      const Flexible(
                         fit: FlexFit.tight,
                         child: Padding(
                           padding: EdgeInsets.all(12.0),
@@ -132,16 +132,13 @@ class _SettingsPageState extends State<SettingsPage> {
                       ),
                     ],
                   ),
-                  SizedBox(height: 20),
-                  Row(
+                  const SizedBox(height: 20),
+                  const Row(
                     children: [
-                      CircleAvatar(
-                        radius: 30,
-                        child: IconButton(
-                          icon: Icon(Icons.logout),
-                          color: Colors.red,
-                          onPressed: null,
-                        ),
+                      IconButton(
+                        icon: Icon(Icons.logout),
+                        color: Colors.red,
+                        onPressed: null,
                       ),
                       Flexible(
                         fit: FlexFit.tight,
