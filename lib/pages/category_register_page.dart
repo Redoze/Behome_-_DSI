@@ -3,7 +3,9 @@ import 'package:flutter/material.dart';
 import '../models/category_model.dart';
 import '../models/icons_list_model.dart';
 import '../services/category_service.dart';
+import 'package:behome/widgets/form_validators.dart';
 import 'package:provider/provider.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 class CategoryRegisterPage extends StatefulWidget {
   const CategoryRegisterPage({super.key});
@@ -14,27 +16,38 @@ class CategoryRegisterPage extends StatefulWidget {
 
 class _CategoryRegisterPageState extends State<CategoryRegisterPage> {
   var _iconController = null;
-  final _titleController = TextEditingController();
+  final titleController = TextEditingController();
+  final formKey = GlobalKey<FormState>();
 
-  void _submitCategory(String homeId) {
-    final String iconName = IconsListModel()
-        .getList
-        .entries
-        .where((entry) => entry.value == _iconController)
-        .map((entry) => entry.key)
-        .toString();
-    // No ID passed at creation time here
-    var category = CategoryModel(
-        title: _titleController.text.toString(),
-        icon: iconName.toString(),
-        homeId: homeId);
+  CategoryService categoryService = CategoryService();
 
-    var categoryService = CategoryService();
-    // If categoryId is null, it's a new category, call 'createCategory'.
+  void _submitCategory(String homeId) async {
+    try {
+      final String iconName = IconsListModel()
+          .getList
+          .entries
+          .where((entry) => entry.value == _iconController)
+          .map((entry) => entry.key)
+          .toString();
+      // No ID passed at creation time here
+      var newCategory = CategoryModel(
+          title: titleController.text.toString(),
+          icon: iconName.toString(),
+          homeId: homeId);
 
-    categoryService.createCategory(category);
+      await categoryService.createCategory(newCategory);
 
-    Navigator.pop(context);
+      Navigator.pop(context);
+    } catch (e) {
+      Fluttertoast.showToast(
+          msg: "Erro ao adicionar Categoria: ${e.toString()}",
+          toastLength: Toast.LENGTH_LONG,
+          gravity: ToastGravity.BOTTOM,
+          timeInSecForIosWeb: 1,
+          backgroundColor: Colors.red,
+          textColor: Colors.white,
+          fontSize: 16.0);
+    }
   }
 
   @override
@@ -74,11 +87,20 @@ class _CategoryRegisterPageState extends State<CategoryRegisterPage> {
                     Column(
                       children: [
                         const SizedBox(height: 30),
-                        TextField(
-                          //TITULO DA CATEGORIA
-                          controller: _titleController,
-                          decoration: const InputDecoration(
-                            labelText: 'Nome da Categoria',
+                        Form(
+                          key: formKey,
+                          child: TextFormField(
+                            //TITULO DA CATEGORIA
+                            controller: titleController,
+                            validator: (value) {
+                              if (value == null || value.isEmpty) {
+                                return 'Por favor, digite um nome válido para a categoria.';
+                              }
+                              return null;
+                            },
+                            decoration: const InputDecoration(
+                              labelText: 'Nome da Categoria',
+                            ),
                           ),
                         ),
                         const SizedBox(height: 30),
@@ -100,8 +122,7 @@ class _CategoryRegisterPageState extends State<CategoryRegisterPage> {
                                     children: [
                                       Icon(iconEntry.value),
                                       const SizedBox(width: 10),
-                                      Text(iconEntry
-                                          .key), // You can customize the text as needed
+                                      Text(iconEntry.key),
                                     ],
                                   ),
                                 );
@@ -123,7 +144,11 @@ class _CategoryRegisterPageState extends State<CategoryRegisterPage> {
                             height: 55,
                             width: 300,
                             child: ElevatedButton(
-                              onPressed: () => _submitCategory(userId),
+                              onPressed: () {
+                                if (formKey.currentState!.validate()) {
+                                  _submitCategory(userId);
+                                }
+                              },
                               style: ElevatedButton.styleFrom(
                                 padding:
                                     const EdgeInsets.symmetric(vertical: 15),
