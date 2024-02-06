@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:behome/pages/categories_page.dart';
+import 'package:behome/pages/login_page.dart';
+import 'package:provider/provider.dart';
+import '../services/auth_service.dart';
 
 class SettingsPage extends StatefulWidget {
   const SettingsPage({super.key});
@@ -133,14 +136,21 @@ class _SettingsPageState extends State<SettingsPage> {
                     ],
                   ),
                   const SizedBox(height: 20),
-                  const Row(
+                  Row(
                     children: [
                       IconButton(
-                        icon: Icon(Icons.logout),
+                        icon: const Icon(Icons.logout),
                         color: Colors.red,
-                        onPressed: null,
+                        onPressed: () async {
+                          await Provider.of<AuthService>(context, listen: false)
+                              .logout();
+
+                          Navigator.of(context).pushReplacement(
+                              MaterialPageRoute(
+                                  builder: (context) => LoginPage()));
+                        },
                       ),
-                      Flexible(
+                      const Flexible(
                         fit: FlexFit.tight,
                         child: Padding(
                           padding: EdgeInsets.all(12.0),

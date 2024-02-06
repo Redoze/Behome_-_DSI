@@ -33,16 +33,22 @@ class CategoriesList extends StatelessWidget {
           return const Center(child: Text('Ocorreu algum erro!'));
         }
 
-        if (snapshot.data!.isEmpty) {
-          return const Center(
-              heightFactor: 8,
-              child: Text(
-                'Nenhuma Categoria Registrada!',
-                style: TextStyle(
-                  color: Color.fromRGBO(8, 85, 255, 1),
-                  fontSize: 20,
+        if (!snapshot.hasData || snapshot.data!.isEmpty) {
+          return Column(
+            children: [
+              SizedBox(height: MediaQuery.of(context).size.height * 0.15),
+              SizedBox(
+                height: MediaQuery.of(context).size.height * 0.35,
+                child: const Text(
+                  'Nenhuma Categoria Registrada!',
+                  style: TextStyle(
+                    color: Color.fromRGBO(8, 85, 255, 1),
+                    fontSize: 20,
+                  ),
                 ),
-              ));
+              ),
+            ],
+          );
         }
 
         List<CategoryModel> categories = snapshot.data!;
@@ -75,9 +81,64 @@ class CategoriesList extends StatelessWidget {
                               )),
                         ),
                       ),
-                      trailing: Text(category.icon
-                          .toString()
-                          .substring(1, category.icon.toString().length - 1)),
+                      trailing: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          SizedBox(
+                            width: 50,
+                            child: FittedBox(
+                              fit: BoxFit.contain,
+                              child: ElevatedButton(
+                                onPressed: () async {
+                                  // You could create a dialog here to ask for new data (title and icon)
+                                  // Then, use CategoryService().updateCategory(updatedCategory) to update the category in Firestore
+                                },
+                                child: const Icon(Icons.edit,
+                                    size: 15, color: Colors.blue),
+                              ),
+                            ),
+                          ),
+                          SizedBox(
+                            width: 50,
+                            child: FittedBox(
+                              fit: BoxFit.contain,
+                              child: ElevatedButton(
+                                onPressed: () async {
+                                  final confirmDelete = await showDialog(
+                                    context: context,
+                                    builder: (context) => AlertDialog(
+                                      title: const Text('Confirmação'),
+                                      content: const Text(
+                                          'Deseja realmente deletar essa categoria?'),
+                                      actions: [
+                                        TextButton(
+                                          onPressed: () =>
+                                              Navigator.of(context).pop(true),
+                                          child: const Text('Sim'),
+                                        ),
+                                        TextButton(
+                                          onPressed: () =>
+                                              Navigator.of(context).pop(false),
+                                          child: const Text('Não'),
+                                        ),
+                                      ],
+                                    ),
+                                  );
+                                  if (confirmDelete) {
+                                    CategoryService()
+                                        .deleteCategory(category.id.toString());
+                                  }
+                                },
+                                child: const Icon(
+                                  Icons.delete,
+                                  size: 15,
+                                  color: Colors.red,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
                   );
                 },

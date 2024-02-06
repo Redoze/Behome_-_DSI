@@ -8,6 +8,7 @@ class CategoryService {
   Stream<List<CategoryModel>> readCategories(String homeId) {
     return _categoriesCollection
         .where('homeId', isEqualTo: homeId)
+        .where('isActive', isEqualTo: true)
         .snapshots()
         .map((snapshot) => snapshot.docs
             .map((doc) => CategoryModel.fromFirestore(
