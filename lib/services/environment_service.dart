@@ -5,7 +5,7 @@ class EnvironmentService {
   final CollectionReference _environmentsCollection =
       FirebaseFirestore.instance.collection('environments');
 
-  Stream<List<EnvironmentModel>> readCategories(String homeId) {
+  Stream<List<EnvironmentModel>> readEnvironments(String homeId) {
     return _environmentsCollection
         .where('homeId', isEqualTo: homeId)
         .where('isActive', isEqualTo: true)
