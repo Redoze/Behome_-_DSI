@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class CategoriesList extends StatelessWidget {
-  const CategoriesList({
+  const EnvironmentsList({
     super.key,
   });
 
@@ -22,7 +22,7 @@ class CategoriesList extends StatelessWidget {
     String userId = authService.user!.uid;
 
     return StreamBuilder<List<EnvironmentModel>>(
-      stream: firestoreService.readCategories(userId),
+      stream: firestoreService.readEnvironments(userId),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const Center(child: CircularProgressIndicator());
@@ -50,16 +50,16 @@ class CategoriesList extends StatelessWidget {
           );
         }
 
-        List<EnvironmentModel> categories = snapshot.data!;
+        List<EnvironmentModel> environments = snapshot.data!;
 
         return Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Expanded(
               child: ListView.builder(
-                itemCount: categories.length,
+                itemCount: environments.length,
                 itemBuilder: (context, index) {
-                  EnvironmentModel environment = categories[index];
+                  EnvironmentModel environment = environments[index];
                   return Card(
                     child: ListTile(
                       title: Text(environment.title),
