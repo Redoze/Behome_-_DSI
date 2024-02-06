@@ -5,7 +5,7 @@ import '../models/icons_list_model.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-class CategoriesList extends StatelessWidget {
+class EnvironmentsList extends StatelessWidget {
   const EnvironmentsList({
     super.key,
   });
