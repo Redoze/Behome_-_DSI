@@ -8,7 +8,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:provider/provider.dart';
 
 class GastosPage extends StatefulWidget {
-  const GastosPage({super.key});
+  const GastosPage({Key? key}) : super(key: key);
 
   @override
   State<GastosPage> createState() => _GastosPageState();
@@ -25,15 +25,15 @@ class _GastosPageState extends State<GastosPage> {
 
   ExpenseService firestoreService = ExpenseService();
 
-  void _submitExpense(String homeId) async {
+  void _submitExpense(String homeId, String personId) async {
     try {
       double doubleAmount = double.parse(amount.text);
 
       ExpenseModel newExpense = ExpenseModel(
         amount: doubleAmount,
-        category: categoria, // @TODO: Put the selected categoryId here
+        categoryID: categoria, 
         date: DateTime.now(),
-        personId: "RandomId", // @TODO: Put the selected personId here
+        personId: personId, 
         personName: residente,
         title: titulo,
         homeId: homeId,
@@ -42,24 +42,26 @@ class _GastosPageState extends State<GastosPage> {
       await firestoreService.createExpense(newExpense);
 
       Fluttertoast.showToast(
-          msg: "Gasto adicionado com sucesso!",
-          toastLength: Toast.LENGTH_SHORT,
-          gravity: ToastGravity.BOTTOM,
-          timeInSecForIosWeb: 1,
-          backgroundColor: Colors.green,
-          textColor: Colors.white,
-          fontSize: 16.0);
+        msg: "Gasto adicionado com sucesso!",
+        toastLength: Toast.LENGTH_SHORT,
+        gravity: ToastGravity.BOTTOM,
+        timeInSecForIosWeb: 1,
+        backgroundColor: Colors.green,
+        textColor: Colors.white,
+        fontSize: 16.0,
+      );
 
       Navigator.pop(context); // Navigate back
     } catch (e) {
       Fluttertoast.showToast(
-          msg: "Erro ao adicionar gasto: ${e.toString()}",
-          toastLength: Toast.LENGTH_LONG,
-          gravity: ToastGravity.BOTTOM,
-          timeInSecForIosWeb: 1,
-          backgroundColor: Colors.red,
-          textColor: Colors.white,
-          fontSize: 16.0);
+        msg: "Erro ao adicionar gasto: ${e.toString()}",
+        toastLength: Toast.LENGTH_LONG,
+        gravity: ToastGravity.BOTTOM,
+        timeInSecForIosWeb: 1,
+        backgroundColor: Colors.red,
+        textColor: Colors.white,
+        fontSize: 16.0,
+      );
     }
   }
 
