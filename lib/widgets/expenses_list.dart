@@ -13,7 +13,7 @@ class ExpensesList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     AuthService authService = Provider.of<AuthService>(context);
-    FirestoreService firestoreService = FirestoreService();
+    ExpenseService firestoreService = ExpenseService();
 
     // Check if the user is not null
     if (authService.user == null) {
@@ -92,3 +92,4 @@ class ExpensesList extends StatelessWidget {
     );
   }
 }
+

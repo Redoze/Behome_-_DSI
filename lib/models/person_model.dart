@@ -1,6 +1,6 @@
 class PersonModel {
-  final String? id;
-  final String name;
+  String? id;
+  String name;
 
   PersonModel({
     this.id,
@@ -11,5 +11,12 @@ class PersonModel {
     return {
       "name": name,
     };
+  }
+
+  factory PersonModel.fromFirestore(Map<String, dynamic> firestore, String id) {
+    return PersonModel(
+      id: id,
+      name: firestore['name'],
+    );
   }
 }

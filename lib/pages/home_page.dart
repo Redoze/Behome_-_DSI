@@ -1,4 +1,5 @@
 import 'package:behome/pages/gastos_page.dart';
+import 'package:behome/pages/settings_page.dart';
 import 'package:behome/services/auth_service.dart';
 import 'package:behome/services/expense_service.dart';
 import 'package:behome/styles/text_styles.dart';
@@ -44,7 +45,12 @@ class _HomePageState extends State<HomePage> {
           child: Column(
             children: [
               HomeHeader(
-                onSettingsPressed: logout,
+                onSettingsPressed: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (builder) => const SettingsPage()));
+                },
               ),
               const HouseInfo(),
               const SizedBox(height: 40),
@@ -158,7 +164,8 @@ class HouseInfo extends StatelessWidget {
               icon: const Icon(Icons.keyboard_arrow_left),
             ),
             const SizedBox(width: 20),
-            const Text("Dezembro", style: AppTextStyles.label),
+            Text(DateFormat("MMMM").format(DateTime.now()).toString(),
+                style: AppTextStyles.label),
             const SizedBox(width: 20),
             IconButton(
               onPressed: () {},
@@ -184,7 +191,7 @@ class ExpenseTotalValue extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     AuthService authService = Provider.of<AuthService>(context);
-    FirestoreService firestoreService = FirestoreService();
+    ExpenseService firestoreService = ExpenseService();
 
     // Check if the user is not null
     if (authService.user == null) {
