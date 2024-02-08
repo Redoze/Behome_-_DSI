@@ -79,13 +79,21 @@ class _GastosPageState extends State<GastosPage> {
     String userId = authService.user!.uid;
 
     return Scaffold(
-      body: Center(
+      appBar: AppBar(
+        leading: IconButton(
+          icon: Icon (Icons.arrow_back),
+          onPressed: () {
+            Navigator.of(context).pop();
+          },
+        ),
+      ),
+      body: SingleChildScrollView( 
         child: Container(
           alignment: Alignment.topLeft,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const SizedBox(height: 40),
+              // const SizedBox(height: 40),
               const Padding(
                 padding: EdgeInsets.all(20),
                 child: Column(
@@ -98,7 +106,7 @@ class _GastosPageState extends State<GastosPage> {
                         fontWeight: FontWeight.bold,
                       ),
                     ),
-                    SizedBox(height: 10),
+                    SizedBox(height: 12),
                     // Adicionando o texto "Valor" na cor cinza
                   ],
                 ),
@@ -119,7 +127,7 @@ class _GastosPageState extends State<GastosPage> {
                           labelText: 'Valor',
                         ),
                       ),
-                      const SizedBox(height: 10),
+                      const SizedBox(height: 12),
                       TextFormField(
                         onChanged: (value) => titulo = value,
                         decoration: const InputDecoration(
@@ -127,7 +135,7 @@ class _GastosPageState extends State<GastosPage> {
                           labelText: 'Titulo',
                         ),
                       ),
-                      const SizedBox(height: 10),
+                      const SizedBox(height: 12),
                       TextFormField(
                         onChanged: (value) => residente = value,
                         decoration: const InputDecoration(
@@ -135,7 +143,7 @@ class _GastosPageState extends State<GastosPage> {
                           labelText: 'Residente',
                         ),
                       ),
-                      const SizedBox(height: 10),
+                      const SizedBox(height: 12),
                       StreamBuilder<List<PersonModel>>(
                         stream: PersonService().readPersons(userId),
                         builder: (context, snapshot) {
@@ -176,7 +184,7 @@ class _GastosPageState extends State<GastosPage> {
                           );
                         },
                       ),
-                      const SizedBox(height: 10),
+                      const SizedBox(height: 12),
                       StreamBuilder<List<CategoryModel>>(
                         stream: categoryService.readCategories(userId),
                         builder: (context, snapshot) {
@@ -217,7 +225,7 @@ class _GastosPageState extends State<GastosPage> {
                           );
                         },
                       ),
-                      const SizedBox(height: 10),
+                      const SizedBox(height: 12),
                       // CupertinoSwitch
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -248,18 +256,20 @@ class _GastosPageState extends State<GastosPage> {
               ),
               Padding(
                 padding: const EdgeInsets.only(top: 20),
-                child: SizedBox(
-                  width: double.infinity,
-                  child: ElevatedButton(
-                    onPressed: () {
-                      if (formKey.currentState!.validate()) {
-                        _submitExpense(userId);
-                      }
-                    },
-                    style: ElevatedButton.styleFrom(
-                      padding: const EdgeInsets.symmetric(vertical: 15),
+                child: Center(
+                  child: SizedBox(
+                    width: MediaQuery.of(context).size.width * 0.8,
+                    child: ElevatedButton(
+                      onPressed: () {
+                        if (formKey.currentState!.validate()) {
+                          _submitExpense(userId);
+                        }
+                      },
+                      style: ElevatedButton.styleFrom(
+                        padding: const EdgeInsets.symmetric(vertical: 15),
+                      ),
+                      child: const Text('Adicionar Gasto'),
                     ),
-                    child: const Text('Adicionar Gasto'),
                   ),
                 ),
               ),
