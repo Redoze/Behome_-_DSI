@@ -41,11 +41,11 @@ class _CategoryPageState extends State<CategoryPage> {
                   ],
                 ),
               ),
-              SizedBox(height: MediaQuery.of(context).size.height * 0.1),
+              SizedBox(height: MediaQuery.of(context).size.height * 0.05),
               SizedBox(
                   height: MediaQuery.of(context).size.height * 0.5,
                   child: const CategoriesList()),
-              SizedBox(height: MediaQuery.of(context).size.height * 0.01),
+              SizedBox(height: MediaQuery.of(context).size.height * 0.05),
               FittedBox(
                 fit: BoxFit.cover,
                 child: SizedBox(

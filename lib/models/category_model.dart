@@ -1,5 +1,3 @@
-import 'package:flutter/material.dart';
-
 class CategoryModel {
   String? id;
   final String title;
