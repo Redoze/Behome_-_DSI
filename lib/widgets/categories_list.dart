@@ -92,30 +92,39 @@ class _CategoriesListState extends State<CategoriesList> {
                 ),
               ),
               actions: <Widget>[
-                ElevatedButton(
-                  child: const Text('Cancelar'),
-                  onPressed: () => Navigator.of(context).pop(),
-                ),
-                ElevatedButton(
-                  child: const Text('Salvar'),
-                  onPressed: () async {
-                    if (formKey.currentState!.validate()) {
-                      String iconName = IconsListModel()
-                          .getList
-                          .entries
-                          .where((entry) => entry.value == iconController)
-                          .map((entry) => entry.key)
-                          .toString();
-                      CategoryModel updatedCategory = CategoryModel(
-                          id: category.id, // Keep the same ID
-                          title: titleController.text.toString(),
-                          icon: iconName.toString(),
-                          homeId: category.homeId);
-                      await CategoryService().updateCategory(updatedCategory);
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    ElevatedButton(
+                      child: const Text('Cancelar'),
+                      onPressed: () => Navigator.of(context).pop(),
+                    ),
+                    const SizedBox(
+                      width: 20,
+                    ),
+                    ElevatedButton(
+                      child: const Text('Salvar'),
+                      onPressed: () async {
+                        if (formKey.currentState!.validate()) {
+                          String iconName = IconsListModel()
+                              .getList
+                              .entries
+                              .where((entry) => entry.value == iconController)
+                              .map((entry) => entry.key)
+                              .toString();
+                          CategoryModel updatedCategory = CategoryModel(
+                              id: category.id, // Keep the same ID
+                              title: titleController.text.toString(),
+                              icon: iconName.toString(),
+                              homeId: category.homeId);
+                          await CategoryService()
+                              .updateCategory(updatedCategory);
 
-                      Navigator.of(context).pop();
-                    }
-                  },
+                          Navigator.of(context).pop();
+                        }
+                      },
+                    ),
+                  ],
                 ),
               ],
             );

@@ -62,7 +62,7 @@ class _CategoryPageState extends State<CategoryPage> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Text(
-                          'Nova Transação',
+                          'Nova Categoria',
                           textAlign: TextAlign.center,
                           style: TextStyle(
                             color: Color.fromRGBO(8, 85, 255, 1),
