@@ -5,11 +5,16 @@ import '../models/icons_list_model.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-class CategoriesList extends StatelessWidget {
+class CategoriesList extends StatefulWidget {
   const CategoriesList({
     super.key,
   });
 
+  @override
+  State<CategoriesList> createState() => _CategoriesListState();
+}
+
+class _CategoriesListState extends State<CategoriesList> {
   @override
   Widget build(BuildContext context) {
     AuthService authService = Provider.of<AuthService>(context);
@@ -21,6 +26,101 @@ class CategoriesList extends StatelessWidget {
     }
 
     String userId = authService.user!.uid;
+    var iconController = null;
+
+    void showEditCategoryForm(BuildContext context, CategoryModel category) {
+      final titleController = TextEditingController(text: category.title);
+      final formKey = GlobalKey<FormState>();
+
+      setState(() {
+        iconController = IconsListModel().getList[category.icon];
+      });
+      showDialog(
+          context: context,
+          builder: (context) {
+            return AlertDialog(
+              content: Form(
+                key: formKey,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    TextFormField(
+                      controller: titleController,
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Por favor, digite um nome válido para a categoria.';
+                        }
+                        return null;
+                      },
+                      decoration: const InputDecoration(
+                        labelText: 'Nome da Categoria',
+                      ),
+                    ),
+                    const SizedBox(height: 20),
+                    FittedBox(
+                      fit: BoxFit.contain,
+                      child: SizedBox(
+                        width: 320,
+                        child: DropdownButton<IconData>(
+                          value: iconController,
+                          hint: const Text("Ícone da Categoria"),
+                          items:
+                              IconsListModel().getList.entries.map((iconEntry) {
+                            return DropdownMenuItem<IconData>(
+                              value: iconEntry.value,
+                              child: Row(
+                                children: [
+                                  Icon(iconEntry.value),
+                                  const SizedBox(width: 10),
+                                  Text(iconEntry.key),
+                                ],
+                              ),
+                            );
+                          }).toList(),
+                          onChanged: (IconData? value) {
+                            setState(
+                              () {
+                                iconController = value!;
+                              },
+                            );
+                          },
+                        ),
+                      ),
+                    )
+                  ],
+                ),
+              ),
+              actions: <Widget>[
+                ElevatedButton(
+                  child: const Text('Cancelar'),
+                  onPressed: () => Navigator.of(context).pop(),
+                ),
+                ElevatedButton(
+                  child: const Text('Salvar'),
+                  onPressed: () async {
+                    if (formKey.currentState!.validate()) {
+                      String iconName = IconsListModel()
+                          .getList
+                          .entries
+                          .where((entry) => entry.value == iconController)
+                          .map((entry) => entry.key)
+                          .toString();
+                      CategoryModel updatedCategory = CategoryModel(
+                          id: category.id, // Keep the same ID
+                          title: titleController.text.toString(),
+                          icon: iconName.toString(),
+                          homeId: category.homeId);
+                      await CategoryService().updateCategory(updatedCategory);
+
+                      Navigator.of(context).pop();
+                    }
+                  },
+                ),
+              ],
+            );
+          });
+    }
 
     return StreamBuilder<List<CategoryModel>>(
       stream: firestoreService.readCategories(userId),
@@ -90,8 +190,7 @@ class CategoriesList extends StatelessWidget {
                               fit: BoxFit.contain,
                               child: ElevatedButton(
                                 onPressed: () async {
-                                  // You could create a dialog here to ask for new data (title and icon)
-                                  // Then, use CategoryService().updateCategory(updatedCategory) to update the category in Firestore
+                                  showEditCategoryForm(context, category);
                                 },
                                 child: const Icon(Icons.edit,
                                     size: 15, color: Colors.blue),
