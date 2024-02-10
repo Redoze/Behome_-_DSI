@@ -26,108 +26,109 @@ class _CategoriesListState extends State<CategoriesList> {
     }
 
     String userId = authService.user!.uid;
-    var iconController = null;
 
     void showEditCategoryForm(BuildContext context, CategoryModel category) {
       final titleController = TextEditingController(text: category.title);
       final formKey = GlobalKey<FormState>();
 
-      setState(() {
-        iconController = IconsListModel().getList[category.icon];
-      });
       showDialog(
           context: context,
           builder: (context) {
-            return AlertDialog(
-              content: Form(
-                key: formKey,
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    TextFormField(
-                      controller: titleController,
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Por favor, digite um nome válido para a categoria.';
-                        }
-                        return null;
-                      },
-                      decoration: const InputDecoration(
-                        labelText: 'Nome da Categoria',
-                      ),
-                    ),
-                    const SizedBox(height: 20),
-                    FittedBox(
-                      fit: BoxFit.contain,
-                      child: SizedBox(
-                        width: 320,
-                        child: DropdownButton<IconData>(
-                          value: iconController,
-                          hint: const Text("Ícone da Categoria"),
-                          items:
-                              IconsListModel().getList.entries.map((iconEntry) {
-                            return DropdownMenuItem<IconData>(
-                              value: iconEntry.value,
-                              child: Row(
-                                children: [
-                                  Icon(iconEntry.value),
-                                  const SizedBox(width: 10),
-                                  Text(iconEntry.key),
-                                ],
-                              ),
-                            );
-                          }).toList(),
-                          onChanged: (IconData? value) {
-                            setState(
-                              () {
-                                iconController = value!;
-                              },
-                            );
-                          },
+            var iconController = null;
+            return StatefulBuilder(builder: (context, setState) {
+              return AlertDialog(
+                content: Form(
+                  key: formKey,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      TextFormField(
+                        controller: titleController,
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Por favor, digite um nome válido para a categoria.';
+                          }
+                          return null;
+                        },
+                        decoration: const InputDecoration(
+                          labelText: 'Nome da Categoria',
                         ),
                       ),
-                    )
-                  ],
+                      const SizedBox(height: 20),
+                      FittedBox(
+                        fit: BoxFit.contain,
+                        child: SizedBox(
+                          width: 320,
+                          child: DropdownButton<IconData>(
+                            value: iconController,
+                            hint: const Text("Ícone da Categoria"),
+                            items: IconsListModel()
+                                .getList
+                                .entries
+                                .map((iconEntry) {
+                              return DropdownMenuItem<IconData>(
+                                value: iconEntry.value,
+                                child: Row(
+                                  children: [
+                                    Icon(iconEntry.value),
+                                    const SizedBox(width: 10),
+                                    Text(iconEntry.key),
+                                  ],
+                                ),
+                              );
+                            }).toList(),
+                            onChanged: (IconData? value) {
+                              setState(
+                                () {
+                                  iconController = value!;
+                                },
+                              );
+                            },
+                          ),
+                        ),
+                      )
+                    ],
+                  ),
                 ),
-              ),
-              actions: <Widget>[
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    ElevatedButton(
-                      child: const Text('Cancelar'),
-                      onPressed: () => Navigator.of(context).pop(),
-                    ),
-                    const SizedBox(
-                      width: 20,
-                    ),
-                    ElevatedButton(
-                      child: const Text('Salvar'),
-                      onPressed: () async {
-                        if (formKey.currentState!.validate()) {
-                          String iconName = IconsListModel()
-                              .getList
-                              .entries
-                              .where((entry) => entry.value == iconController)
-                              .map((entry) => entry.key)
-                              .toString();
-                          CategoryModel updatedCategory = CategoryModel(
-                              id: category.id, // Keep the same ID
-                              title: titleController.text.toString(),
-                              icon: iconName.toString(),
-                              homeId: category.homeId);
-                          await CategoryService()
-                              .updateCategory(updatedCategory);
+                actions: <Widget>[
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      ElevatedButton(
+                        child: const Text('Cancelar'),
+                        onPressed: () => Navigator.of(context).pop(),
+                      ),
+                      const SizedBox(
+                        width: 20,
+                      ),
+                      ElevatedButton(
+                        child: const Text('Salvar'),
+                        onPressed: () async {
+                          if (formKey.currentState!.validate()) {
+                            String iconName = IconsListModel()
+                                .getList
+                                .entries
+                                .where((entry) => entry.value == iconController)
+                                .map((entry) => entry.key)
+                                .toString();
+                            CategoryModel updatedCategory = CategoryModel(
+                                id: category.id, // Keep the same ID
+                                title: titleController.text.toString(),
+                                icon: iconName.toString(),
+                                homeId: category.homeId);
+                            await CategoryService()
+                                .updateCategory(updatedCategory);
 
-                          Navigator.of(context).pop();
-                        }
-                      },
-                    ),
-                  ],
-                ),
-              ],
-            );
+                            Navigator.of(context).pop();
+                          }
+                        },
+                      ),
+                    ],
+                  ),
+                ],
+              );
+            });
           });
     }
 
