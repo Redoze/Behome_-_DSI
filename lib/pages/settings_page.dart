@@ -135,7 +135,7 @@ class _SettingsPageState extends State<SettingsPage> {
                       ),
                     ],
                   ),
-                  const SizedBox(height: 20),
+ /*               const SizedBox(height: 20),
                   Row(
                     children: [
                       IconButton(
@@ -182,7 +182,7 @@ class _SettingsPageState extends State<SettingsPage> {
                         ),
                       ),
                     ],
-                  ),
+                  ),*/
                   const SizedBox(height: 20),
                   Row(
                     children: [
