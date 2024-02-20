@@ -28,7 +28,7 @@ class _GastosPageState extends State<GastosPage> {
   String personId = ''; // Adicionado para armazenar o ID da pessoa selecionada
   bool isRecorrente = false;
 
-  ExpenseService expenseService = ExpenseService();
+  FirestoreService expenseService = FirestoreService();
   CategoryService categoryService = CategoryService();
 
   void _submitExpense(String homeId) async {
