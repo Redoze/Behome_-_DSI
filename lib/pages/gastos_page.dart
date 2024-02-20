@@ -1,6 +1,10 @@
 import 'package:behome/models/expense_model.dart';
+import 'package:behome/models/person_model.dart';
+import 'package:behome/models/category_model.dart';
 import 'package:behome/services/auth_service.dart';
 import 'package:behome/services/expense_service.dart';
+import 'package:behome/services/category_service.dart';
+import 'package:behome/services/person_service.dart';
 import 'package:behome/widgets/form_validators.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
@@ -20,10 +24,12 @@ class _GastosPageState extends State<GastosPage> {
 
   String titulo = '';
   String residente = '';
-  String categoria = '';
+  String categoryId = ''; // Modificado de categoria para categoryId
+  String personId = ''; // Adicionado para armazenar o ID da pessoa selecionada
   bool isRecorrente = false;
 
-  FirestoreService firestoreService = FirestoreService();
+  ExpenseService expenseService = ExpenseService();
+  CategoryService categoryService = CategoryService();
 
   void _submitExpense(String homeId) async {
     try {
@@ -31,15 +37,15 @@ class _GastosPageState extends State<GastosPage> {
 
       ExpenseModel newExpense = ExpenseModel(
         amount: doubleAmount,
-        category: categoria,
+        category: categoryId,
         date: DateTime.now(),
-        personId: "RandomId",
+        personId: personId, // Usar o ID da pessoa selecionada
         personName: residente,
         title: titulo,
         homeId: homeId,
       );
 
-      await firestoreService.createExpense(newExpense);
+      await expenseService.createExpense(newExpense);
 
       Fluttertoast.showToast(
           msg: "Gasto adicionado com sucesso!",
@@ -50,7 +56,7 @@ class _GastosPageState extends State<GastosPage> {
           textColor: Colors.white,
           fontSize: 16.0);
 
-      Navigator.pop(context); // Navigate back
+      Navigator.pop(context); // Navegar de volta
     } catch (e) {
       Fluttertoast.showToast(
           msg: "Erro ao adicionar gasto: ${e.toString()}",
@@ -75,13 +81,21 @@ class _GastosPageState extends State<GastosPage> {
     String userId = authService.user!.uid;
 
     return Scaffold(
-      body: Center(
+      appBar: AppBar(
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back),
+          onPressed: () {
+            Navigator.of(context).pop();
+          },
+        ),
+      ),
+      body: SingleChildScrollView(
         child: Container(
           alignment: Alignment.topLeft,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const SizedBox(height: 40),
+              // const SizedBox(height: 40),
               const Padding(
                 padding: EdgeInsets.all(20),
                 child: Column(
@@ -94,7 +108,7 @@ class _GastosPageState extends State<GastosPage> {
                         fontWeight: FontWeight.bold,
                       ),
                     ),
-                    SizedBox(height: 10),
+                    SizedBox(height: 12),
                     // Adicionando o texto "Valor" na cor cinza
                   ],
                 ),
@@ -115,7 +129,7 @@ class _GastosPageState extends State<GastosPage> {
                           labelText: 'Valor',
                         ),
                       ),
-                      const SizedBox(height: 10),
+                      const SizedBox(height: 12),
                       TextFormField(
                         onChanged: (value) => titulo = value,
                         decoration: const InputDecoration(
@@ -123,7 +137,7 @@ class _GastosPageState extends State<GastosPage> {
                           labelText: 'Titulo',
                         ),
                       ),
-                      const SizedBox(height: 10),
+                      const SizedBox(height: 12),
                       TextFormField(
                         onChanged: (value) => residente = value,
                         decoration: const InputDecoration(
@@ -131,15 +145,91 @@ class _GastosPageState extends State<GastosPage> {
                           labelText: 'Residente',
                         ),
                       ),
-                      const SizedBox(height: 10),
-                      TextFormField(
-                        onChanged: (value) => categoria = value,
-                        decoration: const InputDecoration(
-                          border: OutlineInputBorder(),
-                          labelText: 'Categoria',
-                        ),
+                      const SizedBox(height: 12),
+                      StreamBuilder<List<PersonModel>>(
+                        stream: PersonService().readPersons(userId),
+                        builder: (context, snapshot) {
+                          if (snapshot.connectionState ==
+                              ConnectionState.waiting) {
+                            return const Center(
+                                child: CircularProgressIndicator());
+                          }
+
+                          if (snapshot.error != null) {
+                            return const Center(
+                                child: Text('Ocorreu algum erro!'));
+                          }
+
+                          if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                            return const Text('Nenhuma Pessoa Registrada!');
+                          }
+
+                          List<PersonModel> persons = snapshot.data!;
+
+                          return DropdownButtonFormField<String>(
+                            value: personId.isNotEmpty
+                                ? personId
+                                : userId, // Por padrão, usa o ID do usuário logado
+                            onChanged: (value) {
+                              setState(() {
+                                personId = value!;
+                              });
+                            },
+                            items: persons.map((person) {
+                              return DropdownMenuItem<String>(
+                                value: person.id!,
+                                child: Text(person.name),
+                              );
+                            }).toList(),
+                            decoration: const InputDecoration(
+                              border: OutlineInputBorder(),
+                              labelText: 'Pessoa',
+                            ),
+                          );
+                        },
                       ),
-                      const SizedBox(height: 10),
+                      const SizedBox(height: 12),
+                      StreamBuilder<List<CategoryModel>>(
+                        stream: categoryService.readCategories(userId),
+                        builder: (context, snapshot) {
+                          if (snapshot.connectionState ==
+                              ConnectionState.waiting) {
+                            return const Center(
+                                child: CircularProgressIndicator());
+                          }
+
+                          if (snapshot.error != null) {
+                            return const Center(
+                                child: Text('Ocorreu algum erro!'));
+                          }
+
+                          if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                            return const Text('Nenhuma Categoria Registrada!');
+                          }
+
+                          List<CategoryModel> categories = snapshot.data!;
+
+                          return DropdownButtonFormField<String>(
+                            value: categoryId,
+                            onChanged: (value) {
+                              setState(() {
+                                categoryId = value!;
+                              });
+                            },
+                            items: categories.map((category) {
+                              return DropdownMenuItem<String>(
+                                value: category.id!,
+                                child: Text(category.title),
+                              );
+                            }).toList(),
+                            decoration: const InputDecoration(
+                              border: OutlineInputBorder(),
+                              labelText: 'Categoria',
+                            ),
+                          );
+                        },
+                      ),
+                      const SizedBox(height: 12),
                       // CupertinoSwitch
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -170,18 +260,20 @@ class _GastosPageState extends State<GastosPage> {
               ),
               Padding(
                 padding: const EdgeInsets.only(top: 20),
-                child: SizedBox(
-                  width: double.infinity,
-                  child: ElevatedButton(
-                    onPressed: () {
-                      if (formKey.currentState!.validate()) {
-                        _submitExpense(userId);
-                      }
-                    },
-                    style: ElevatedButton.styleFrom(
-                      padding: const EdgeInsets.symmetric(vertical: 15),
+                child: Center(
+                  child: SizedBox(
+                    width: MediaQuery.of(context).size.width * 0.8,
+                    child: ElevatedButton(
+                      onPressed: () {
+                        if (formKey.currentState!.validate()) {
+                          _submitExpense(userId);
+                        }
+                      },
+                      style: ElevatedButton.styleFrom(
+                        padding: const EdgeInsets.symmetric(vertical: 15),
+                      ),
+                      child: const Text('Adicionar Gasto'),
                     ),
-                    child: const Text('Adicionar Gasto'),
                   ),
                 ),
               ),

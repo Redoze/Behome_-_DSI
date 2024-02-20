@@ -135,6 +135,54 @@ class _SettingsPageState extends State<SettingsPage> {
                       ),
                     ],
                   ),
+                  /*               const SizedBox(height: 20),
+                  Row(
+                    children: [
+                      IconButton(
+                        icon: const Icon(Icons.add_business_rounded),
+                        color: const Color.fromRGBO(105, 255, 195, 1),
+                        onPressed: () {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (builder) => const EnvironmentPage()));
+                        },
+                      ),
+                      const Flexible(
+                        fit: FlexFit.tight,
+                        child: Padding(
+                          padding: EdgeInsets.all(12.0),
+                          child: Column(
+                            children: [
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    "Adicionar Ambiente",
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    "Adicione um novo ambiente de despesas.",
+                                    style: TextStyle(
+                                      fontSize: 10,
+                                      fontWeight: FontWeight.w300,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),*/
                   const SizedBox(height: 20),
                   Row(
                     children: [
