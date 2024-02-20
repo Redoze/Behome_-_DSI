@@ -37,3 +37,4 @@ class ExpenseService {
   Future<void> deleteExpense(String id) async {
     await _expensesCollection.doc(id).delete();
   }
+}
